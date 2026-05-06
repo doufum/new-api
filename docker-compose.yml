@@ -41,9 +41,12 @@ services:
 #      - UMAMI_SCRIPT_URL=https://analytics.umami.is/script.js  # Umami 脚本 URL，默认为官方地址 (Umami Script URL, defaults to official URL)
 
     depends_on:
-      - redis
-      - postgres
-#      - mysql  # Uncomment if using MySQL
+      redis:
+        condition: service_started
+      postgres:
+        condition: service_healthy
+#      mysql:  # Uncomment if using MySQL
+#        condition: service_started
     networks:
       - new-api-network
     healthcheck:

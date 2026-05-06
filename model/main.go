@@ -132,9 +132,7 @@ func chooseDB(envName string, isLog bool) (*gorm.DB, error) {
 			return gorm.Open(postgres.New(postgres.Config{
 				DSN:                  dsn,
 				PreferSimpleProtocol: true, // disables implicit prepared statement usage
-			}), &gorm.Config{
-				PrepareStmt: true, // precompile SQL
-			})
+			}), postgresGormConfig())
 		}
 		if strings.HasPrefix(dsn, "local") {
 			common.SysLog("SQL_DSN not set, using SQLite as database")
@@ -172,6 +170,13 @@ func chooseDB(envName string, isLog bool) (*gorm.DB, error) {
 	return gorm.Open(sqlite.Open(common.SQLitePath), &gorm.Config{
 		PrepareStmt: true, // precompile SQL
 	})
+}
+
+func postgresGormConfig() *gorm.Config {
+	return &gorm.Config{
+		// pgx simple protocol and GORM prepared statement cache conflict in some PostgreSQL setups.
+		PrepareStmt: false,
+	}
 }
 
 func InitDB() (err error) {
