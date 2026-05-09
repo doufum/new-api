@@ -3,8 +3,7 @@ FROM oven/bun:1@sha256:87416c977a612a204eb54ab9f3927023c2a3c971f4f345a01da08ea62
 WORKDIR /build
 COPY web/default/package.json .
 COPY web/default/bun.lock .
-RUN --mount=type=cache,target=/root/.bun/install/cache \
-    rm -rf /root/.bun/install/cache/* && \
+RUN --mount=type=cache,id=bun-default-cache,target=/root/.bun/install/cache \
     bun install --verbose || (sleep 5 && bun install --verbose)
 COPY ./web/default .
 COPY ./VERSION .
@@ -15,8 +14,7 @@ FROM oven/bun:1@sha256:87416c977a612a204eb54ab9f3927023c2a3c971f4f345a01da08ea62
 WORKDIR /build
 COPY web/classic/package.json .
 COPY web/classic/bun.lock .
-RUN --mount=type=cache,target=/root/.bun/install/cache \
-    rm -rf /root/.bun/install/cache/* && \
+RUN --mount=type=cache,id=bun-classic-cache,target=/root/.bun/install/cache \
     bun install --verbose || (sleep 5 && bun install --verbose)
 COPY ./web/classic .
 COPY ./VERSION .
@@ -27,8 +25,7 @@ FROM oven/bun:1@sha256:87416c977a612a204eb54ab9f3927023c2a3c971f4f345a01da08ea62
 WORKDIR /build
 COPY web/user-console/package.json .
 COPY web/user-console/bun.lock .
-RUN --mount=type=cache,target=/root/.bun/install/cache \
-    rm -rf /root/.bun/install/cache/* && \
+RUN --mount=type=cache,id=bun-user-console-cache,target=/root/.bun/install/cache \
     bun install --verbose || (sleep 5 && bun install --verbose)
 COPY ./web/user-console .
 COPY ./VERSION .
@@ -45,7 +42,7 @@ ENV GOEXPERIMENT=greenteagc
 WORKDIR /build
 
 ADD go.mod go.sum ./
-RUN --mount=type=cache,target=/go/pkg/mod go mod download
+RUN --mount=type=cache,id=go-mod-cache,target=/go/pkg/mod go mod download
 
 COPY . .
 COPY --from=builder /build/dist ./web/default/dist
@@ -55,8 +52,8 @@ RUN go build -ldflags "-s -w -X 'github.com/QuantumNous/new-api/common.Version=$
 
 FROM debian:bookworm-slim@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252
 
-RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
-    --mount=type=cache,target=/var/lib/apt,sharing=locked \
+RUN --mount=type=cache,id=apt-cache,target=/var/cache/apt,sharing=locked \
+    --mount=type=cache,id=apt-lib-cache,target=/var/lib/apt,sharing=locked \
     mv /etc/apt/apt.conf.d/docker-clean /etc/apt/apt.conf.d/docker-clean.disabled \
     && \
     apt-get update \
