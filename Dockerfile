@@ -3,7 +3,9 @@ FROM oven/bun:1@sha256:87416c977a612a204eb54ab9f3927023c2a3c971f4f345a01da08ea62
 WORKDIR /build
 COPY web/default/package.json .
 COPY web/default/bun.lock .
-RUN --mount=type=cache,target=/root/.bun/install/cache bun install
+RUN --mount=type=cache,target=/root/.bun/install/cache \
+    rm -rf /root/.bun/install/cache/* && \
+    bun install --verbose || (sleep 5 && bun install --verbose)
 COPY ./web/default .
 COPY ./VERSION .
 RUN DISABLE_ESLINT_PLUGIN='true' VITE_REACT_APP_VERSION=$(cat VERSION) bun run build
@@ -13,7 +15,9 @@ FROM oven/bun:1@sha256:87416c977a612a204eb54ab9f3927023c2a3c971f4f345a01da08ea62
 WORKDIR /build
 COPY web/classic/package.json .
 COPY web/classic/bun.lock .
-RUN --mount=type=cache,target=/root/.bun/install/cache bun install
+RUN --mount=type=cache,target=/root/.bun/install/cache \
+    rm -rf /root/.bun/install/cache/* && \
+    bun install --verbose || (sleep 5 && bun install --verbose)
 COPY ./web/classic .
 COPY ./VERSION .
 RUN VITE_REACT_APP_VERSION=$(cat VERSION) bun run build
@@ -23,7 +27,9 @@ FROM oven/bun:1@sha256:87416c977a612a204eb54ab9f3927023c2a3c971f4f345a01da08ea62
 WORKDIR /build
 COPY web/user-console/package.json .
 COPY web/user-console/bun.lock .
-RUN --mount=type=cache,target=/root/.bun/install/cache bun install
+RUN --mount=type=cache,target=/root/.bun/install/cache \
+    rm -rf /root/.bun/install/cache/* && \
+    bun install --verbose || (sleep 5 && bun install --verbose)
 COPY ./web/user-console .
 COPY ./VERSION .
 RUN VITE_REACT_APP_VERSION=$(cat VERSION) bun run build
