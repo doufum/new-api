@@ -7,10 +7,13 @@ import {
   QueryClientProvider,
 } from '@tanstack/react-query'
 import { RouterProvider, createRouter } from '@tanstack/react-router'
+import { MANAGEMENT_MOUNT_PATH } from '@/config/app-base'
 import i18next from 'i18next'
 import { toast } from 'sonner'
 import { useAuthStore } from '@/stores/auth-store'
 import { getStatus } from '@/lib/api'
+import { normalizeManagementBrandUrl } from '@/lib/brand-assets'
+import { resolveSystemName } from '@/lib/branding'
 import '@/lib/dayjs'
 import { applyFaviconToDom } from '@/lib/dom-utils'
 import { handleServerError } from '@/lib/handle-server-error'
@@ -76,6 +79,7 @@ const queryClient = new QueryClient({
 
 // Create a new router instance
 const router = createRouter({
+  basepath: MANAGEMENT_MOUNT_PATH,
   routeTree,
   context: { queryClient },
   defaultPreload: 'intent',
@@ -107,8 +111,9 @@ const rootElement = document.getElementById('root')!
       const saved = localStorage.getItem('status')
       if (saved) {
         const s = JSON.parse(saved)
-        if (s?.system_name) apply(s.system_name)
-        if (s?.logo) applyFaviconToDom(s.logo)
+        if (s?.system_name) apply(resolveSystemName(s.system_name))
+        const cachedLogo = normalizeManagementBrandUrl(s?.logo)
+        if (cachedLogo) applyFaviconToDom(cachedLogo)
       }
     } catch {
       /* empty */
@@ -116,15 +121,26 @@ const rootElement = document.getElementById('root')!
     // Background refresh
     getStatus()
       .then((s) => {
+        const systemLogo = normalizeManagementBrandUrl(
+          s?.logo as string | undefined
+        )
         if (s?.system_name) {
-          apply(s.system_name as string)
+          const systemName = resolveSystemName(s.system_name)
+          apply(systemName)
           try {
-            localStorage.setItem('status', JSON.stringify(s))
+            localStorage.setItem(
+              'status',
+              JSON.stringify({
+                ...s,
+                system_name: systemName,
+                ...(systemLogo ? { logo: systemLogo } : {}),
+              })
+            )
           } catch {
             /* empty */
           }
         }
-        if (s?.logo) applyFaviconToDom(s.logo as string)
+        if (systemLogo) applyFaviconToDom(systemLogo)
       })
       .catch(() => {
         /* empty */

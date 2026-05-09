@@ -26,12 +26,14 @@ import {
   IllustrationConstructionDark,
 } from '@douyinfe/semi-illustrations';
 import { useTranslation } from 'react-i18next';
+import { getSystemName } from '../../helpers';
 
 const About = () => {
   const { t } = useTranslation();
   const [about, setAbout] = useState('');
   const [aboutLoaded, setAboutLoaded] = useState(false);
   const currentYear = new Date().getFullYear();
+  const systemName = getSystemName();
 
   const displayAbout = async () => {
     setAbout(localStorage.getItem('about') || '');
@@ -62,7 +64,7 @@ const About = () => {
   const customDescription = (
     <div style={{ textAlign: 'center' }}>
       <p>{t('可在设置页面设置关于内容，支持 HTML & Markdown')}</p>
-      {t('New API项目仓库地址：')}
+      {t('RightMaaS Project Repository:')}
       <a
         href='https://github.com/QuantumNous/new-api'
         target='_blank'
@@ -78,7 +80,7 @@ const About = () => {
           rel='noopener noreferrer'
           className='!text-semi-color-primary'
         >
-          NewAPI
+          {systemName}
         </a>{' '}
         {t('© {{currentYear}}', { currentYear })}{' '}
         <a

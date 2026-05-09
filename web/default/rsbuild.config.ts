@@ -3,6 +3,7 @@ import { fileURLToPath } from 'url'
 import { defineConfig, loadEnv } from '@rsbuild/core'
 import { pluginReact } from '@rsbuild/plugin-react'
 import { tanstackRouter } from '@tanstack/router-plugin/rspack'
+import { MANAGEMENT_MOUNT_PATH } from './src/config/app-base'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
@@ -68,6 +69,7 @@ export default defineConfig(({ envMode }) => {
       proxy: devProxy,
     },
     output: {
+      assetPrefix: `${MANAGEMENT_MOUNT_PATH}/`,
       // Production optimizations
       minify: isProd,
       target: 'web',

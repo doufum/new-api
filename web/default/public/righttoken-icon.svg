@@ -1,0 +1,40 @@
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  viewBox="0 0 168 168"
+  fill="none"
+  role="img"
+  aria-labelledby="righttokenIconTitle righttokenIconDesc"
+>
+  <title id="righttokenIconTitle">RightMaaS icon</title>
+  <desc id="righttokenIconDesc">
+    Balanced C1 mark with a rightward token flow arc, arrow chevron, and central pivot node.
+  </desc>
+  <defs>
+    <linearGradient id="righttokenGradient" x1="18" y1="24" x2="148" y2="142" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#17E3E8" />
+      <stop offset="0.46" stop-color="#5DA7FF" />
+      <stop offset="1" stop-color="#F35CC1" />
+    </linearGradient>
+  </defs>
+  <path
+    d="M38 48C38 35.85 47.85 26 60 26H91C115.853 26 136 46.147 136 71V71C136 95.853 115.853 116 91 116H71"
+    stroke="url(#righttokenGradient)"
+    stroke-width="20"
+    stroke-linecap="round"
+  />
+  <path
+    d="M68 50L102 84L68 118"
+    stroke="url(#righttokenGradient)"
+    stroke-width="18"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  />
+  <circle
+    cx="58"
+    cy="84"
+    r="9"
+    fill="#F8FEFF"
+    stroke="#08111F"
+    stroke-width="4"
+  />
+</svg>

@@ -1,6 +1,8 @@
 import i18n from 'i18next'
 import LanguageDetector from 'i18next-browser-languagedetector'
 import { initReactI18next } from 'react-i18next'
+import { replaceBrandNameTokens } from '@/lib/branding'
+import { getSystemName } from '@/stores/system-config-store'
 import en from './locales/en.json'
 import fr from './locales/fr.json'
 import ja from './locales/ja.json'
@@ -17,7 +19,17 @@ export const resources = {
   vi,
 } as const
 
+const brandNamePostProcessor = {
+  name: 'brandName',
+  type: 'postProcessor' as const,
+  process(value: string) {
+    if (typeof value !== 'string') return value
+    return replaceBrandNameTokens(value, getSystemName())
+  },
+}
+
 i18n
+  .use(brandNamePostProcessor)
   .use(LanguageDetector)
   .use(initReactI18next)
   .init({
@@ -30,6 +42,7 @@ i18n
     interpolation: {
       escapeValue: false, // not needed for react as it escapes by default
     },
+    postProcess: ['brandName'],
     detection: {
       order: ['localStorage', 'navigator'],
       caches: ['localStorage'],

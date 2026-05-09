@@ -10,6 +10,8 @@ build
 logs
 web/default/dist
 web/classic/dist
+web/user-console/dist
+web/user-console/node_modules
 web/node_modules
 web/dist
 .env
@@ -35,3 +37,6 @@ data/
 .test
 token_estimator_test.go
 skills-lock.json
+
+.playwright-mcp/
+.superpowers/

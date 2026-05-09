@@ -1,0 +1,5 @@
+export { CTA } from './sections/cta'
+export { Governance } from './sections/governance'
+export { Hero } from './sections/hero'
+export { TrustBar } from './sections/trust-bar'
+export { ValueSections } from './sections/value-sections'

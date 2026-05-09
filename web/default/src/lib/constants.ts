@@ -1,10 +1,12 @@
 /**
  * Application-wide constants
  */
+import { normalizeManagementBrandUrl } from './brand-assets'
+import { BUILTIN_SYSTEM_NAME } from './branding'
 
 // System Configuration Defaults
-export const DEFAULT_SYSTEM_NAME = 'New API'
-export const DEFAULT_LOGO = '/logo.png'
+export const DEFAULT_SYSTEM_NAME = BUILTIN_SYSTEM_NAME
+export const DEFAULT_LOGO = normalizeManagementBrandUrl('/rightmaas-icon.svg')
 
 // LocalStorage Keys
 export const STORAGE_KEYS = {

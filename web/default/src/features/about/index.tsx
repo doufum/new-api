@@ -4,6 +4,8 @@ import { useTranslation } from 'react-i18next'
 import { Markdown } from '@/components/ui/markdown'
 import { Skeleton } from '@/components/ui/skeleton'
 import { PublicLayout } from '@/components/layout'
+import { useSystemConfig } from '@/hooks/use-system-config'
+import { DEFAULT_SYSTEM_NAME } from '@/lib/constants'
 import { getAboutContent } from './api'
 
 function isValidUrl(value: string) {
@@ -21,7 +23,9 @@ function isLikelyHtml(value: string) {
 
 function EmptyAboutState() {
   const { t } = useTranslation()
+  const { systemName } = useSystemConfig()
   const currentYear = new Date().getFullYear()
+  const displayName = systemName || DEFAULT_SYSTEM_NAME
 
   return (
     <div className='flex min-h-[60vh] items-center justify-center p-8'>
@@ -39,7 +43,7 @@ function EmptyAboutState() {
         </div>
         <div className='space-y-4 text-sm'>
           <p>
-            {t('New API Project Repository:')}{' '}
+            {t('RightMaaS Project Repository:')}{' '}
             <a
               href='https://github.com/QuantumNous/new-api'
               target='_blank'
@@ -56,7 +60,7 @@ function EmptyAboutState() {
               rel='noopener noreferrer'
               className='text-primary hover:underline'
             >
-              {t('NewAPI')}
+              {displayName}
             </a>{' '}
             © {currentYear}{' '}
             <a

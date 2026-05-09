@@ -7,4 +7,14 @@ Makefile
 docs
 .eslintcache
 .gocache
-/web/node_modules
+data
+logs
+.playwright-mcp
+.superpowers
+.agents
+web/**/node_modules
+web/**/dist
+web/**/.rsbuild
+web/**/.vite
+web/**/.cache
+web/**/coverage

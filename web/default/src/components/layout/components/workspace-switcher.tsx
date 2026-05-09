@@ -3,6 +3,7 @@ import { useNavigate, useLocation } from '@tanstack/react-router'
 import { ChevronsUpDown } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { useAuthStore } from '@/stores/auth-store'
+import { DEFAULT_SYSTEM_NAME } from '@/lib/constants'
 import { ROLE } from '@/lib/roles'
 import { useStatus } from '@/hooks/use-status'
 import { useSystemConfig } from '@/hooks/use-system-config'
@@ -37,7 +38,7 @@ type WorkspaceSwitcherProps = {
  */
 export function WorkspaceSwitcher({
   workspaces,
-  defaultName = 'New API',
+  defaultName = DEFAULT_SYSTEM_NAME,
   defaultVersion,
 }: WorkspaceSwitcherProps) {
   const { t } = useTranslation()
@@ -45,7 +46,7 @@ export function WorkspaceSwitcher({
   const { pathname } = useLocation()
   const { isMobile } = useSidebar()
   const { status } = useStatus()
-  const { logo } = useSystemConfig()
+  const { logo, systemName } = useSystemConfig()
   const isSuperAdmin = useAuthStore(
     (state) => state.auth.user?.role === ROLE.SUPER_ADMIN
   )
@@ -61,7 +62,7 @@ export function WorkspaceSwitcher({
           index === 0
             ? {
                 ...workspace,
-                name: status?.system_name || defaultName,
+                name: systemName || defaultName,
                 plan: status?.version || defaultVersion || t('Unknown version'),
               }
             : workspace
@@ -72,7 +73,7 @@ export function WorkspaceSwitcher({
         ),
     [
       workspaces,
-      status?.system_name,
+      systemName,
       status?.version,
       defaultName,
       defaultVersion,

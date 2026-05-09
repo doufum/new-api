@@ -2,8 +2,10 @@
 #
 # Usage:
 #   1. docker compose -f docker-compose.dev.yml up -d
-#   2. cd web && bun install && bun run dev
-#   3. Open http://localhost:3001 (Rsbuild dev server, API auto-proxied to :3000)
+#   2. cd web/default && bun install && bun run dev (default frontend on :3001)
+#   3. cd web/user-console && bun install && bun run dev (user console on :5173)
+#   4. Backend API: http://localhost:3000
+#   5. User Console (embedded): http://localhost:3000/user-console
 #
 # Rebuild backend after Go code changes:
 #   docker compose -f docker-compose.dev.yml up -d --build new-api
@@ -36,6 +38,25 @@ services:
         condition: service_started
       postgres:
         condition: service_healthy
+    networks:
+      - dev-network
+
+  user-console-dev:
+    image: oven/bun:1
+    container_name: user-console-dev
+    restart: unless-stopped
+    working_dir: /app
+    command: sh -c "bun install && bun run dev"
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./web/user-console:/app
+      - /app/node_modules
+    environment:
+      - VITE_REACT_APP_SERVER_URL=http://localhost:3000
+      - TZ=Asia/Shanghai
+    depends_on:
+      - new-api
     networks:
       - dev-network
 

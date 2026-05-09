@@ -2,6 +2,67 @@ import { STORAGE_KEYS } from '../constants'
 import type { PlaygroundConfig, ParameterEnabled, Message } from '../types'
 import { sanitizeMessagesOnLoad } from './message-utils'
 
+type LegacyPlaygroundMessage = {
+  id?: string
+  key?: string
+  role?: string
+  from?: string
+  content?: string
+  reasoningContent?: string
+  status?: string
+}
+
+function normalizeLegacyMessage(message: unknown, index: number): Message | null {
+  if (!message || typeof message !== 'object') {
+    return null
+  }
+
+  const candidate = message as Partial<Message> & LegacyPlaygroundMessage
+  if (
+    typeof candidate.key === 'string' &&
+    typeof candidate.from === 'string' &&
+    Array.isArray(candidate.versions)
+  ) {
+    return candidate as Message
+  }
+
+  const keySource = candidate.key || candidate.id
+  const fromSource = candidate.from || candidate.role
+  if (typeof keySource !== 'string' || typeof fromSource !== 'string') {
+    return null
+  }
+
+  const content =
+    typeof candidate.content === 'string' ? candidate.content : ''
+  const normalized: Message = {
+    key: keySource,
+    from: fromSource as Message['from'],
+    versions: [{ id: `${keySource}-v${index}`, content }],
+  }
+
+  if (typeof candidate.reasoningContent === 'string' && candidate.reasoningContent) {
+    normalized.reasoning = {
+      content: candidate.reasoningContent,
+      duration: 0,
+    }
+    normalized.isReasoningStreaming = false
+  }
+
+  if (typeof candidate.status === 'string') {
+    normalized.status = candidate.status as Message['status']
+  }
+
+  return normalized
+}
+
+function normalizeMessages(rawMessages: unknown[]): Message[] {
+  const normalized = rawMessages
+    .map((message, index) => normalizeLegacyMessage(message, index))
+    .filter((message): message is Message => message !== null)
+
+  return normalized.length > 0 ? normalized : []
+}
+
 /**
  * Load playground config from localStorage
  */
@@ -70,10 +131,25 @@ export function loadMessages(): Message[] | null {
   try {
     const saved = localStorage.getItem(STORAGE_KEYS.MESSAGES)
     if (saved) {
-      const parsed: Message[] = JSON.parse(saved)
-      const sanitized = sanitizeMessagesOnLoad(parsed)
+      const parsed = JSON.parse(saved) as
+        | Message[]
+        | { messages?: Message[] | null }
+        | null
+      const rawMessages = Array.isArray(parsed)
+        ? parsed
+        : Array.isArray(parsed?.messages)
+          ? parsed.messages
+          : null
+      if (!rawMessages) {
+        return null
+      }
+      const normalizedMessages = normalizeMessages(rawMessages)
+      if (normalizedMessages.length === 0) {
+        return null
+      }
+      const sanitized = sanitizeMessagesOnLoad(normalizedMessages)
       // Persist sanitized result to avoid re-sanitizing on subsequent loads
-      if (sanitized !== parsed) {
+      if (sanitized !== normalizedMessages) {
         saveMessages(sanitized)
       }
       return sanitized

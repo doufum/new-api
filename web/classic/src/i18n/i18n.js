@@ -29,8 +29,20 @@ import ruTranslation from './locales/ru.json';
 import jaTranslation from './locales/ja.json';
 import viTranslation from './locales/vi.json';
 import { supportedLanguages } from './language';
+import { replaceBrandNameTokens } from '../helpers/branding';
+import { getSystemName } from '../helpers';
+
+const brandNamePostProcessor = {
+  name: 'brandName',
+  type: 'postProcessor',
+  process(value) {
+    if (typeof value !== 'string') return value;
+    return replaceBrandNameTokens(value, getSystemName());
+  },
+};
 
 i18n
+  .use(brandNamePostProcessor)
   .use(LanguageDetector)
   .use(initReactI18next)
   .init({
@@ -50,6 +62,7 @@ i18n
     interpolation: {
       escapeValue: false,
     },
+    postProcess: ['brandName'],
   });
 
 window.__i18n = i18n;

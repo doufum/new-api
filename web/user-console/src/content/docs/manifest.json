@@ -1,0 +1,48 @@
+[
+  {
+    "id": "getting-started",
+    "title": "快速开始",
+    "icon": "Rocket",
+    "items": [
+      { "slug": "intro", "title": "新手入门" },
+      { "slug": "api-key", "title": "API 密钥说明" }
+    ]
+  },
+  {
+    "id": "tools",
+    "title": "工具使用",
+    "icon": "Wrench",
+    "items": [
+      { "slug": "claude-code", "title": "Claude Code" },
+      { "slug": "codex", "title": "Codex" },
+      { "slug": "opencode", "title": "OpenCode" },
+      { "slug": "openclaw", "title": "OpenClaw" }
+    ]
+  },
+  {
+    "id": "api-reference",
+    "title": "API 文档",
+    "icon": "Code",
+    "items": [
+      { "slug": "openai-compatible", "title": "OpenAI 兼容接口" },
+      { "slug": "authentication", "title": "认证方式" }
+    ]
+  },
+  {
+    "id": "models-and-billing",
+    "title": "模型与计费",
+    "icon": "Coins",
+    "items": [
+      { "slug": "supported-models", "title": "支持的模型" },
+      { "slug": "billing", "title": "计费说明" }
+    ]
+  },
+  {
+    "id": "faq",
+    "title": "常见问题",
+    "icon": "HelpCircle",
+    "items": [
+      { "slug": "index", "title": "常见问题" }
+    ]
+  }
+]

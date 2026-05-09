@@ -69,7 +69,11 @@ type ChannelInfo struct {
 
 // Value implements driver.Valuer interface
 func (c ChannelInfo) Value() (driver.Value, error) {
-	return common.Marshal(&c)
+	data, err := common.Marshal(&c)
+	if err != nil {
+		return nil, err
+	}
+	return string(data), nil
 }
 
 // Scan implements sql.Scanner interface
